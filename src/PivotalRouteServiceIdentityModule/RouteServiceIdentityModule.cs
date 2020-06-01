@@ -7,8 +7,8 @@ namespace Pivotal.RouteServiceIdentityModule
 {
     public class RouteServiceIdentityModule : IHttpModule
     {
-        const string CF_IDENTITY_HEADER = "X-Cf-Identity";
-        const string CF_IMPERSONATED_IDENTITY_HEADER = "X-Cf-Impersonated-Identity";
+        const string CF_IDENTITY_HEADER = "X-CF-Identity";
+        const string CF_ROLES_HEADER = "X-CF-Roles";
 
 
         public void Init(HttpApplication context)
@@ -20,16 +20,20 @@ namespace Pivotal.RouteServiceIdentityModule
         {
             var context = ((HttpApplication) sender).Context;
 
-            var isImpersonatedUserHeaderExists = context.Request.Headers.AllKeys.Contains(CF_IMPERSONATED_IDENTITY_HEADER);
 
-            var identityHeader = isImpersonatedUserHeaderExists
-                                    ? context.Request.Headers.Get(CF_IMPERSONATED_IDENTITY_HEADER) 
-                                        : context.Request.Headers.Get(CF_IDENTITY_HEADER);
+            var identityHeader = context.Request.Headers.Get(CF_IDENTITY_HEADER);
+            var rolesHeader  = context.Request.Headers.Get(CF_ROLES_HEADER);
 
             if (!String.IsNullOrWhiteSpace(identityHeader))
             {
+                
                 var nameClaim = new Claim(ClaimTypes.Name, identityHeader);
-                var identity = new ClaimsIdentity(new[] { nameClaim }, isImpersonatedUserHeaderExists ? "RouteService-Impersonated" : "RouteService");
+                var identity = new ClaimsIdentity(new[] { nameClaim }, "RouteService");
+                if (rolesHeader != null)
+                {
+                    var roleClaims = rolesHeader.Split(',').Select(x => new Claim(ClaimTypes.Role, x.Trim()));
+                    identity.AddClaims(roleClaims);
+                }
                 context.User = new ClaimsPrincipal(identity);
             }
         }
