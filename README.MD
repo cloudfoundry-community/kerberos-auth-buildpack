@@ -1,8 +1,8 @@
-### IMPORTANT NOTE: From version 2.0.0, this buildpack supports only ingress scenario. Egress scenarios are supported by another supply buildpack https://github.com/alfusinigoj/route-service-auth-egress-buildpack
+### IMPORTANT NOTE: From version 2.0.0, this buildpack supports only ingress scenario. Egress scenarios are supported by another supply buildpack https://github.com/cloudfoundry-community/kerberos-auth-egress-buildpack
 
 #### This project offers a supply buildpack which helps applying IWA security (kerberos) for app-app/svc-svc/webapp secure communication, in PCF. 
 
-In detail, if application running in PCF is protected by `route service` (https://github.com/macsux/route-service-auth), this buildpack helps in injecting the logged-in user principal into the current context/thread, please listen to Andrew Stackhov's video here "youtube video link here"'
+In detail, if application running in PCF is protected by `route service` (https://github.com/cloudfoundry-community/kerberos-auth-route-service), this buildpack helps in injecting the logged-in user principal into the current context/thread, please listen to Andrew Stackhov's video here "youtube video link here"'
 
 #### Specific functionalities executed by this buildpack
 
